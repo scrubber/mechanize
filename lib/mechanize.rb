@@ -12,6 +12,7 @@ require 'iconv'
 require 'nkf'
 
 require 'mechanize/util'
+require 'mechanize/nokogiri_util'
 require 'mechanize/content_type_error'
 require 'mechanize/response_code_error'
 require 'mechanize/unsupported_scheme_error'
@@ -90,6 +91,7 @@ class Mechanize
 
   attr_reader :history
   attr_reader :pluggable_parser
+  attr_reader :nokogiri2mechanize
 
   alias :follow_redirect? :redirect_ok
 
@@ -127,6 +129,7 @@ class Mechanize
     # attr_readers
     @history        = Mechanize::History.new
     @pluggable_parser = PluggableParser.new
+    @nokogiri2mechanize = {} # nokogiri XML::Element -> mechanize element (Form::Field or Page::Link)
 
     # Auth variables
     @user           = nil # Auth User

@@ -5,10 +5,10 @@ class Mechanize
     class ImageButton < Button
       attr_accessor :x, :y
 
-      def initialize(name, value)
+      def initialize(name, value, form)
         @x = nil
         @y = nil
-        super(name, value)
+        super(name, value, form)
       end
 
       def query_value

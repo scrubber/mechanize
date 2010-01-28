@@ -84,6 +84,11 @@ class Mechanize
         end
       end
 
+      #generate the nokogiri2mech hash
+      if(mech.page)
+        mech.page.forms
+        mech.page.links
+      end
       @parser
     end
     alias :root :parser
@@ -126,7 +131,8 @@ class Mechanize
       def links
         @links ||= %w{ a area }.map do |tag|
           search(tag).map do |node|
-            Link.new(node, @mech, self)
+            link = Link.new(node, @mech, self)
+            node.map2mechanize(@mech, link)
           end
         end.flatten
       end
@@ -135,6 +141,7 @@ class Mechanize
         @forms ||= search('form').map do |html_form|
           form = Form.new(html_form, @mech, self)
           form.action ||= @uri.to_s
+          html_form.map2mechanize(@mech, form)
           form
         end
       end

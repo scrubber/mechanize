@@ -48,6 +48,7 @@ lib/mechanize/headers.rb
 lib/mechanize/history.rb
 lib/mechanize/inspect.rb
 lib/mechanize/monkey_patch.rb
+lib/mechanize/nokogiri_util.rb
 lib/mechanize/page.rb
 lib/mechanize/page/base.rb
 lib/mechanize/page/frame.rb

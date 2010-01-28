@@ -11,13 +11,14 @@ class Mechanize
     class MultiSelectList < Field
       attr_accessor :options
 
-      def initialize(name, node)
+      def initialize(name, node, mech)
         value = []
         @options = []
 
         # parse
         node.search('option').each do |n|
           option = Option.new(n, self)
+          n.map2mechanize(mech, option)
           @options << option
         end
         super(name, value)

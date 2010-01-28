@@ -274,9 +274,14 @@ class Mechanize
       @file_uploads = []
       @radiobuttons = []
       @checkboxes   = []
-
+      
+      form_elements = [@fields, @buttons, @file_uploads, @radiobuttons, @checkboxes]
+      
       # Find all input tags
       form_node.search('input').each do |node|
+        #store array sizes so we can determine which one changed
+        original_array_sizes = form_elements.map{|e| e.size}
+        
         type = (node['type'] || 'text').downcase
         name = node['name']
         next if name.nil? && !(type == 'submit' || type =='button')
@@ -288,15 +293,15 @@ class Mechanize
         when 'file'
           @file_uploads << FileUpload.new(node['name'], nil)
         when 'submit'
-          @buttons << Submit.new(node['name'], node['value'])
+          @buttons << Submit.new(node['name'], node['value'], self)
         when 'button'
-          @buttons << Button.new(node['name'], node['value'])
+          @buttons << Button.new(node['name'], node['value'], self)
         when 'reset'
           @buttons << Reset.new(node['name'], node['value'])
         when 'image'
-          @buttons << ImageButton.new(node['name'], node['value'])
+          @buttons << ImageButton.new(node['name'], node['value'], self)
         when 'hidden'
-          @fields << Hidden.new(node['name'], node['value'] || '')
+          @fields << Hidden.new(node['name'], node['value'] || '', self)
         when 'text'
           @fields << Text.new(node['name'], node['value'] || '')
         when 'textarea'
@@ -304,21 +309,31 @@ class Mechanize
         else
           @fields << Field.new(node['name'], node['value'] || '')
         end
+        
+        #find the array that has been modified, and take the last element added to it...
+        array_sizes = form_elements.map{|e| e.size}
+        form_element = form_elements[original_array_sizes.zip(array_sizes).map{|x|x[1]-x[0]}.index(1)].last
+        #...and map it to mechanize
+        node.map2mechanize(@mech, form_element)    
       end
+      
 
       # Find all textarea tags
       form_node.search('textarea').each do |node|
         next if node['name'].nil?
         @fields << Field.new(node['name'], node.inner_text)
+        node.map2mechanize(@mech, @fields.last)
       end
 
       # Find all select tags
       form_node.search('select').each do |node|
         next if node['name'].nil?
         if node.has_attribute? 'multiple'
-          @fields << MultiSelectList.new(node['name'], node)
+          @fields << MultiSelectList.new(node['name'], node, @mech)
+          node.map2mechanize(@mech, @fields.last)
         else
-          @fields << SelectList.new(node['name'], node)
+          @fields << SelectList.new(node['name'], node, @mech)
+          node.map2mechanize(@mech, @fields.last)
         end
       end
 
@@ -328,6 +343,7 @@ class Mechanize
         type = (node['type'] || 'submit').downcase
         next if type == 'reset'
         @buttons << Button.new(node['name'], node['value'])
+        node.map2mechanize(@mech, @buttons.last)
       end
     end
 
