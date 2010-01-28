@@ -31,9 +31,5 @@ module Nokogiri
         @mech = mech
       end      
     end
-    
-    class NodeSet
-      
-    end
   end
 end  
