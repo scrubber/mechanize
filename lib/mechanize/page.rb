@@ -133,6 +133,7 @@ class Mechanize
           search(tag).map do |node|
             link = Link.new(node, @mech, self)
             node.map2mechanize(@mech, link)
+            link            
           end
         end.flatten
       end
