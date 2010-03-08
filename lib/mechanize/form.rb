@@ -342,7 +342,7 @@ class Mechanize
       form_node.search('button').each do |node|
         type = (node['type'] || 'submit').downcase
         next if type == 'reset'
-        @buttons << Button.new(node['name'], node['value'])
+        @buttons << Button.new(node['name'], node['value'], node)
         node.map2mechanize(@mech, @buttons.last)
       end
     end

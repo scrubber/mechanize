@@ -26,7 +26,7 @@ class TestCheckBoxes < Test::Unit::TestCase
   end
 
   def test_image_button
-    f = Mechanize::Form::ImageButton.new('a&amp;b', 'a&amp;b')
+    f = Mechanize::Form::ImageButton.new('a&amp;b', 'a&amp;b',nil)
     assert_equal('a&b', f.name)
     assert_equal('a&b', f.value)
   end
