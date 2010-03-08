@@ -297,7 +297,7 @@ class Mechanize
         when 'button'
           @buttons << Button.new(node['name'], node['value'], self)
         when 'reset'
-          @buttons << Reset.new(node['name'], node['value'])
+          @buttons << Reset.new(node['name'], node['value'], self)
         when 'image'
           @buttons << ImageButton.new(node['name'], node['value'], self)
         when 'hidden'
